@@ -17,7 +17,10 @@ namespace mosaico {
 // Currently captured for future use (session grouping, live/sealed UI);
 // no active consumer reads these fields today.
 struct SessionInfo {
-  std::string uuid;
+  // Session identity. mosaicod >= 0.6.0 sends "locator" (the uuid was dropped
+  // from SessionAppMetadata in mosaicod #584); older servers send "uuid".
+  // Whichever key the server emits lands here.
+  std::string locator;
   int64_t created_at_ns = 0;
   std::optional<int64_t> completed_at_ns;
   std::vector<std::string> topics;

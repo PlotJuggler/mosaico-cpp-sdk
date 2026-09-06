@@ -46,11 +46,15 @@ std::string assemble(const std::vector<std::pair<std::string, std::string>>& cla
 // ---------------------------------------------------------------------------
 
 QueryTopicBuilder& QueryTopicBuilder::withName(const std::string& name) {
-  clauses_.emplace_back("locator", opEq(name));
+  // The server's name/identity filter key is "name". It was "locator" until
+  // mosaicod #565 renamed it; a stale "locator" key silently matches nothing
+  // against current servers. (The streaming ticket descriptor still uses
+  // "resource_locator" — only the query filter key changed.)
+  clauses_.emplace_back("name", opEq(name));
   return *this;
 }
 QueryTopicBuilder& QueryTopicBuilder::withNameMatch(const std::string& partial) {
-  clauses_.emplace_back("locator", opMatch(partial));
+  clauses_.emplace_back("name", opMatch(partial));
   return *this;
 }
 QueryTopicBuilder& QueryTopicBuilder::withOntologyTag(const std::string& tag) {
@@ -74,11 +78,13 @@ QueryFilter QueryTopicBuilder::build() const {
 // ---------------------------------------------------------------------------
 
 QuerySequenceBuilder& QuerySequenceBuilder::withName(const std::string& name) {
-  clauses_.emplace_back("locator", opEq(name));
+  // See QueryTopicBuilder::withName — server key renamed "locator" -> "name"
+  // (mosaicod #565).
+  clauses_.emplace_back("name", opEq(name));
   return *this;
 }
 QuerySequenceBuilder& QuerySequenceBuilder::withNameMatch(const std::string& partial) {
-  clauses_.emplace_back("locator", opMatch(partial));
+  clauses_.emplace_back("name", opMatch(partial));
   return *this;
 }
 QuerySequenceBuilder& QuerySequenceBuilder::withCreatedAfter(int64_t ns) {
