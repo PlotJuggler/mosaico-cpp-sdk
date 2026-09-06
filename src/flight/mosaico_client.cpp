@@ -321,8 +321,12 @@ bool parseSequenceAppMetadata(const std::string& metadata, SequenceInfo& out) {
       out.sessions.reserve(sessions->size());
       for (const auto& s : *sessions) {
         SessionInfo si;
-        if (auto v = tryGetString(s, "uuid"); v.has_value()) {
-          si.uuid = *v;
+        // mosaicod >= 0.6.0 identifies sessions by "locator" (#584); older
+        // servers sent "uuid". Accept both, preferring the current key.
+        if (auto v = tryGetString(s, "locator"); v.has_value()) {
+          si.locator = *v;
+        } else if (auto v = tryGetString(s, "uuid"); v.has_value()) {
+          si.locator = *v;
         }
         if (auto v = tryGetInt64(s, "created_at_ns"); v.has_value()) {
           si.created_at_ns = *v;
