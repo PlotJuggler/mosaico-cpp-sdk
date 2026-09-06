@@ -18,7 +18,7 @@ namespace mosaico {
 // `body_json` is a pre-rendered JSON object (no outer braces quoting issues).
 struct QueryFilter {
   std::string name;
-  std::string body_json;  // serialized object, e.g. {"locator":{"$eq":"x"}}
+  std::string body_json;  // serialized object, e.g. {"name":{"$eq":"x"}}
 };
 
 // Per-topic result entry.
@@ -41,9 +41,9 @@ struct QueryResponse {
 // Fluent builder for QueryTopic filters.
 class QueryTopicBuilder {
  public:
-  // Exact match: {"locator": {"$eq": "<name>"}}
+  // Exact match: {"name": {"$eq": "<name>"}}
   QueryTopicBuilder& withName(const std::string& name);
-  // Partial match: {"locator": {"$match": "<substring>"}}
+  // Partial match: {"name": {"$match": "<substring>"}}
   QueryTopicBuilder& withNameMatch(const std::string& partial);
   // Exact tag: {"ontology_tag": {"$eq": "<tag>"}}
   QueryTopicBuilder& withOntologyTag(const std::string& tag);
